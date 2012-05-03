@@ -68,10 +68,7 @@ WebRTC.Core = (function(passedWindow, $) {
 	};
 
 	detectUserMediaSupport = function() {
-		var isUserMediaStandardSupported = !!(navigator.getUserMedia || 
-											  navigator.webkitGetUserMedia ||
-            								  navigator.mozGetUserMedia || 
-            								  navigator.msGetUserMedia);
+		var isUserMediaStandardSupported = !!(navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia ||  navigator.msGetUserMedia);
 
 		if (!isUserMediaStandardSupported) {
 			userMediaNotSupported();
