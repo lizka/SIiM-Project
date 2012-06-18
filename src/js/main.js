@@ -1,10 +1,6 @@
-var localVideo;
-var remoteVideo;
-var localStream;
-var channel;
-var channelReady = false;
-var pc;
-var started = false;
+var localVideo, remoteVideo, localStream, channel, pc, socket, 
+    channelReady = false,
+    started = false;
 
 initialize = function() {
   console.log("Initializing; room=" + roomKey + ".");
@@ -95,7 +91,7 @@ setStatus = function(state) {
 
 sendMessage = function(path, message) {
   console.log('C->S: ' + message);
-  path += '?r=' + roomLink + '&u=' + user;
+  path += '?r=' + roomKey + '&u=' + user;
   var xhr = new XMLHttpRequest();
   xhr.open('POST', path, true);
   xhr.send(message);
@@ -173,17 +169,26 @@ onRemoteStreamRemoved = function(event) {
   console.log("Remote stream removed.");
 };
 
-onHangup = function() {
+closeConnection = function() {
   console.log("Hanging up.");
 
-  localVideo.style.opacity = 0;
-  remoteVideo.style.opacity = 0;
+  if (!!pc) {
+    pc.close();
+  }
 
-  pc.close();
-  socket.close();
+  if (!!socket) {
+    socket.close();
+  }
 
   pc = null;
   socket = null;
+};
+
+onHangup = function() {
+  localVideo.style.opacity = 0;
+  remoteVideo.style.opacity = 0;
+
+  closeConnection();
 
   setStatus("You have left the call. <a href='" + roomLink + "'>Click here</a> to rejoin.");
 };
