@@ -1,63 +1,25 @@
-<!doctype html>
-<html lang="en">
-
-  <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-
-    <title>SiM project :: WebRTC</title>
-    <meta name="description" content="WebRTC Sample - SiM project, Silesian University of Technology">
-    <meta name="author" content="Wojciech Gawroński">
-
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" type="text/css" href="css/bootstrap.css" />
-    <link rel="stylesheet" type="text/css" href="css/bootstrap-responsive.css" />
-    <link rel="stylesheet" type="text/css" href="css/style.css">
-  </head>
-
-  <body class="bootstrapped-body">
-    <div class="navbar navbar-fixed-top">
-      <div class="navbar-inner">
-        <div class="container pull-left">
-          <a class="brand" href="#">WebRTC sample</a>
-        </div>
-      </div>
-    </div>    
-
-    <div class="container-fluid">
-      <div class="row-fluid">
-        <div class="span10 content">
-          <div class="well">
-            <div id="error-message-container" class="alert alert-error" style="display: none">
-              <p>Your browser doesn't support WebRTC!</p>
-              <p>If you have Chrome >= 18.0 you should:
-                <ol>
-                  <li>Open about:flags in new tab.</li>
-                  <li>Search option named 'MediaStream' and enable it.</li>
-                </ol>
-                After reloading whole browser WebRTC will be supported.</p>
-              <p>WebRTC is working also in Opera Next.</li>
-            </div>
-            <video id="video-stream-canvas" autoplay style="display: none">
-              Your browser doesn't support &lt;video&gt; tag!
-            </video>
-          </div>
-        </div>
-        <div class="span2 sidebar">
-          <div class="well">
-            <button id="capture-button" class="btn btn-primary" disabled="disabled">Capture</button>
-            <button id="stop-button" class="btn btn-danger" disabled="disabled">Stop</button>
-          </div>
-        </div>        
-      </div>        
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <link rel="canonical" href="{{ room_link }}"/>
+  <link rel="stylesheet" type="text/css" href="css/Common.css">
+  <script src="/_ah/channel/jsapi"></script>
+</head>
+<body>
+  <div id="container">
+    <div id="local">
+      <video width="100%" height="100%" id="localVideo" autoplay="autoplay" style="opacity: 0; -webkit-transition-property: opacity; -webkit-transition-duration: 2s;"></video>
     </div>
-
-    <script type="text/javascript" src="js/jquery.min.js"></script>
-    <script type="text/javascript" src="js/bootstrap.js"></script>
-    <script type="text/javascript" src="js/underscore.js"></script>
-    <script type="text/javascript" src="js/backbone.js"></script>
-    <script type="text/javascript" src="js/require.js"></script>
-    <script type="text/javascript" src="js/webrtc.js"></script>
-  </body>
-
+    <div id="remote">
+      <video width="100%" height="100%" id="remoteVideo" autoplay="autoplay" style="opacity: 0; -webkit-transition-property: opacity; -webkit-transition-duration: 2s;"></video>
+    </div>
+    <div id="footer">
+    </div>
+  </div>
+  <a href="http://www.webrtc.org"><img id="logo" alt="WebRTC" src="images/webrtc_black_20p.png"></a>
+  <script type="text/javascript">
+    var pc_config = "{{ pc_config }}", roomLink = "{{ room_link }}", token = "{{ token }}", roomKey = {{ room_key }}, initiator = {{ initiator }}, user = {{ me }};
+  </script>
+  <script type="text/javascript" src="js/main.js"></script>
+</body>
 </html>
