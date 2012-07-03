@@ -231,12 +231,12 @@ function draw(v,c) {
     // get an empty slate to put the data into
     var output = c.createImageData(w, h);
 
-    var real_width = w * 4;
+    var realWidth = w * 4;
     for(var y = 0; y < h; y += 1) {
-      var lines = y*real_width;
+      var lines = y*realWidth;
       for(var x = 0; x < w; x += 1) {
         var pos = lines+(4*x);
-        chooseFilter(pos, input.data, output.data, filterName);
+        chooseFilter(pos, input.data, output.data, filterName, realWidth);
       }
     }
 
@@ -245,7 +245,7 @@ function draw(v,c) {
 	setTimeout(draw,1,v,c,w,h);
 }
 
-chooseFilter = function(pos, inputData, outputData, name) {
+chooseFilter = function(pos, inputData, outputData, name, realWidth) {
   switch(name) {
     case 'negative':
       negativeFilter(pos, inputData, outputData);
