@@ -2,6 +2,14 @@ var localVideo, remoteVideo, localStream, channel, pc, socket,
     channelReady = false,
     started = false;
 
+var filterName = 'None';
+
+$(document).ready(function() {
+  $('select#filter_select').click(function() {
+    filterName = $(this).val();
+  });
+});
+
 initialize = function() {
   console.log("Initializing; room=" + roomKey + ".");
 
@@ -192,5 +200,101 @@ onHangup = function() {
 
   setStatus("You have left the call. <a href='" + roomLink + "'>Click here</a> to rejoin.");
 };
+
+document.addEventListener('DOMContentLoaded', function(){
+	var v = document.getElementById('remoteVideo');
+	var canvas = document.getElementById('remoteVideoCanvas');
+	var context = canvas.getContext('2d');
+ 
+	var cw = Math.floor(v.width);
+	var ch = Math.floor(v.height);
+	var canvas = document.getElementById('remoteVideoCanvas');
+	canvas.width = cw;
+	canvas.height = ch;
+ 
+  draw(v,context);
+ 
+},false);
+ 
+function draw(v,c) {
+	if(started) {
+    var canvas = document.getElementById('remoteVideoCanvas');
+    var w = v.width;
+    var h = v.height;
+    canvas.width = w;
+    canvas.height = h;
+    c.drawImage(v,0,0,w,h);
+
+    // get the image data to manipulate
+    var input = c.getImageData(0, 0, w, h);
+
+    // get an empty slate to put the data into
+    var output = c.createImageData(w, h);
+
+    var realWidth = w * 4;
+    for(var y = 0; y < h; y += 1) {
+      var lines = y*realWidth;
+      for(var x = 0; x < w; x += 1) {
+        var pos = lines+(4*x);
+        chooseFilter(pos, input.data, output.data, filterName, realWidth);
+      }
+    }
+
+    c.putImageData(output, 0, 0);
+  }
+	setTimeout(draw,1,v,c,w,h);
+}
+
+chooseFilter = function(pos, inputData, outputData, name, realWidth) {
+  switch(name) {
+    case 'negative':
+      negativeFilter(pos, inputData, outputData);
+      break;
+    case 'gray':
+      grayFilter(pos, inputData, outputData);
+      break;
+    case 'threshold':
+      thresholdFilter(pos, inputData, outputData);
+      break;
+    default :
+      noFilter(pos, inputData, outputData);
+  }
+}
+
+noFilter = function(pos, inputData, outputData) {
+  outputData[pos] = inputData[pos];
+  outputData[pos+1] = inputData[pos+1];
+  outputData[pos+2] = inputData[pos+2];
+  outputData[pos+3] = inputData[pos+3];
+}
+
+grayFilter = function(pos, inputData, outputData) {
+  var val = (inputData[pos] + inputData[pos+1] + inputData[pos+2]) / 3;
+  outputData[pos] = val;
+  outputData[pos+1] = val;
+  outputData[pos+2] = val;
+  outputData[pos+3] = inputData[pos+3];
+}
+
+negativeFilter = function(pos, inputData, outputData) {
+  outputData[pos] = 255 - inputData[pos];
+  outputData[pos+1] = 255 - inputData[pos+1];
+  outputData[pos+2] = 255 - inputData[pos+2];
+  outputData[pos+3] = inputData[pos+3];
+}
+
+thresholdFilter = function(pos, inputData, outputData) {
+  var val = 0;
+  if (inputData[pos] + inputData[pos+1] + inputData[pos+2] > 384) {
+    val = 255;
+  }
+  else {
+    val = 0;
+  }
+  outputData[pos] = val;
+  outputData[pos+1] = val;
+  outputData[pos+2] = val;
+  outputData[pos+3] = inputData[pos+3];
+}
 
 setTimeout(initialize, 1);

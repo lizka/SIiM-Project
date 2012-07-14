@@ -4,6 +4,7 @@
   <link rel="canonical" href="{{ room_link }}"/>
   <link rel="stylesheet" type="text/css" href="css/Common.css">
   <script src="/_ah/channel/jsapi"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
 </head>
 <body onbeforeunload="return closeConnection();">
   <div id="container">
@@ -11,7 +12,14 @@
       <video width="100%" height="100%" id="localVideo" autoplay="autoplay" style="opacity: 0; -webkit-transition-property: opacity; -webkit-transition-duration: 2s;"></video>
     </div>
     <div id="remote">
-      <video width="100%" height="100%" id="remoteVideo" autoplay="autoplay" style="opacity: 0; -webkit-transition-property: opacity; -webkit-transition-duration: 2s;"></video>
+      <video width="480" height="360" hidden="hidden" id="remoteVideo" autoplay="autoplay" style="opacity: 0; -webkit-transition-property: opacity; -webkit-transition-duration: 2s;"></video>
+      <canvas width="480" height="360" id="remoteVideoCanvas"></canvas>
+      <select id="filter_select">
+        <option value="threshold">Threshold</option>
+        <option value="gray">Gray</option>
+        <option value="negative">Negative</option>
+        <option value="None" selected="selected">None</option>
+      </select>
     </div>
     <div id="footer">
     </div>
