@@ -4,6 +4,13 @@ var localVideo, remoteVideo, localStream, channel, pc, socket,
 
 var filterName = 'None';
 
+//tablica LUT do filtra solaryzacji
+var LUT = new Array(256);
+
+//tablica LUT do filtra korekcji gamma
+var LUTg = new Array(256);
+
+
 var meanRemovalMask = [ [-1, -1, -1],
 						[-1, 9,	-1],
 						[-1, -1, -1] ];
@@ -32,6 +39,12 @@ initialize = function() {
   resetStatus();
   openChannel();
   getUserMedia();
+  
+  //inicjalizacja globalnet tablicy LUT (filt solaryzacji)
+  initLUT();
+  
+  //inicjalizacja globalnej tablicy LUT dla korkcji gamma
+  initLUTg();
 };
 
 openChannel = function() {
@@ -283,6 +296,21 @@ chooseFilter = function(pos, inputData, outputData, name, realWidth, h) {
 	case 'accentGreen':
 	  accentFilter(pos, inputData, outputData, 120, 50);
 	  break;
+	case 'sepia':
+    	sepiaFilter(pos, inputData, outputData);
+      break;
+    case'increasebrightness':
+    	increasebrightnessFilter(pos, inputData, outputData);
+      break;
+    case'decreasebrightness':
+    	decreasebrightnessFilter(pos, inputData, outputData);
+      break;
+    case'solarization':
+    	solarizationFilter(pos, inputData, outputData);
+      break;
+    case'gammacorection':
+    	gammacorection(pos, inputData, outputData);
+      break;
     default :
       noFilter(pos, inputData, outputData);
   }
@@ -466,5 +494,83 @@ hsv2rgb = function(h, s, v) {
 	var rgb = [r,g,b];
 	return rgb;
 }
+
+sepiaFilter = function(pos, inputData, outputData){
+	var val = (inputData[pos] + inputData[pos+1] + inputData[pos+2]) / 3;
+	if (val + 2 * 30 > 255) 
+	{
+		outputData[pos] = 255;
+	} 
+	else
+	{
+		outputData[pos] = val + 2 * 30;				
+	}
+	if (val + 30 > 255) 
+	{
+		outputData[pos+1] = 255;
+	} 
+	else
+	{
+		outputData[pos+1] = val + 30;				
+	}
+	outputData[pos+2] = val;
+	outputData[pos+3] = inputData[pos+3];
+}
+
+increasebrightnessFilter = function(pos, inputData, outputData){
+	outputData[pos] = 100 + inputData[pos];
+	outputData[pos+1] = 100 + inputData[pos+1];
+	outputData[pos+2] = 100 + inputData[pos+2];
+	outputData[pos+3] = inputData[pos+3];
+}
+
+decreasebrightnessFilter = function(pos, inputData, outputData){
+	outputData[pos] = inputData[pos] - 100;
+	outputData[pos+1] = inputData[pos+1] - 100;
+	outputData[pos+2] = inputData[pos+2] - 100;
+	outputData[pos+3] = inputData[pos+3];
+}
+
+solarizationFilter = function(pos, inputData, outputData){
+	outputData[pos+3] = 255;
+	outputData[pos] = LUT[inputData[pos]];
+	outputData[pos+1] = LUT[inputData[pos+1]];
+	outputData[pos+2] = LUT[inputData[pos+2]];
+}
+
+gammacorection = function(pos, inputData, outputData){
+	outputData[pos+3] = 255;
+	outputData[pos] = LUTg[inputData[pos]];
+	outputData[pos+1] = LUTg[inputData[pos+1]];
+	outputData[pos+2] = LUTg[inputData[pos+2]];
+}
+
+//inicjalizacja tablicy LUT dla filtru solaryzacji
+initLUT = function(){
+	var luminanceValue=100;
+	
+	for (var i=0; i<luminanceValue; i++)
+    {
+    	LUT[i] = i;
+    }
+    for (var i=luminanceValue; i<256; i++)
+    {
+    	LUT[i] = 255-i;
+    }  
+}
+
+//inicjalizacja tablicy LUT dla filtru korkcji gamma
+initLUTg = function(){
+	var gammaValue = 3;
+	
+	for (var i=0;i<256;++i)
+	{	
+		newValue = Math.floor(255*Math.pow(i/255.0, 1/gammaValue));
+		if (newValue > 255)
+			LUTg[i] = 255;
+		else
+			LUTg[i] = newValue;
+	}
+} 
 
 setTimeout(initialize, 1);
