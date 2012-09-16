@@ -1,35 +1,37 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
 <head>
+  <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
   <link rel="canonical" href="{{ room_link }}"/>
   <link rel="stylesheet" type="text/css" href="css/Common.css">
   <script src="/_ah/channel/jsapi"></script>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
 </head>
 <body onbeforeunload="return closeConnection();">
+	<h2 id="logo">Systemy interaktywne i multimedialne</h2>
+	<p id="subtitle">tu wstawić tytuł projektu, czy coś.</p>
   <div id="container">
     <div id="local">
-      <video width="100%" height="100%" id="localVideo" autoplay="autoplay" style="opacity: 0; -webkit-transition-property: opacity; -webkit-transition-duration: 2s;"></video>
+      <video width="100%" height="100%" id="localVideo" autoplay="autoplay"></video>
     </div>
     <div id="remote">
-      <video width="480" height="360" hidden="hidden" id="remoteVideo" autoplay="autoplay" style="opacity: 0; -webkit-transition-property: opacity; -webkit-transition-duration: 2s;"></video>
+      <video width="480" height="360" hidden="hidden" id="remoteVideo" autoplay="autoplay"></video>
       <canvas width="480" height="360" id="remoteVideoCanvas"></canvas>
       <select id="filter_select">
         <option value="threshold">Threshold</option>
         <option value="gray">Gray</option>
         <option value="negative">Negative</option>
-		<option value="sharpen">Sharpen (mean removal)</option>
-		<option value="blur">Blur (median)</option>
-		<option value="embossNorth">Emboss (north)</option>
-		<option value="accentRed">Color accent (red)</option>
-		<option value="accentGreen">Color accent (green)</option>
+		    <option value="sharpen">Sharpen (mean removal)</option>
+		    <option value="blur">Blur (median)</option>
+		    <option value="embossNorth">Emboss (north)</option>
+		    <option value="accentRed">Color accent (red)</option>
+		    <option value="accentGreen">Color accent (green)</option>
         <option value="None" selected="selected">None</option>
       </select>
     </div>
     <div id="footer">
     </div>
-  </div>
-  <a href="http://www.webrtc.org"><img id="logo" alt="WebRTC" src="images/webrtc_black_20p.png"></a>
+</div>
   <script type="text/javascript">
     var pc_config = "{{ pc_config }}", roomLink = "{{ room_link }}", token = "{{ token }}", roomKey = "{{ room_key }}", user = "{{ me }}", initiator = {{ initiator }};
   </script>
