@@ -296,6 +296,9 @@ chooseFilter = function(pos, inputData, outputData, name, realWidth, h) {
 	case 'accentGreen':
 	  accentFilter(pos, inputData, outputData, 120, 50);
 	  break;
+	case 'accentBlue':
+	  accentFilter(pos, inputData, outputData, 222, 10);
+	  break;
 	case 'sepia':
     	sepiaFilter(pos, inputData, outputData);
       break;
@@ -311,10 +314,33 @@ chooseFilter = function(pos, inputData, outputData, name, realWidth, h) {
     case'gammacorection':
     	gammacorection(pos, inputData, outputData);
       break;
+	case'saturationFilter':
+    	saturationFilter(pos, inputData, outputData);
+		break;
+	case'desaturationFilter':
+    	desaturationFilter(pos, inputData, outputData);
+		break;
+	case 'RGB_RBG':
+		RGB_RBG(pos, inputData, outputData);
+		break;
+	case 'RGB_BGR':
+		RGB_BGR(pos, inputData, outputData);
+		break;
+	case 'RGB_BRG':
+		RGB_BRG(pos, inputData, outputData);
+		break;
+	case 'RGB_GBR':
+		RGB_GBR(pos, inputData, outputData);
+		break;
+	case 'RGB_GRB':
+		RGB_GRB(pos, inputData, outputData);
+		break;		
     default :
       noFilter(pos, inputData, outputData);
   }
 }
+
+
 
 noFilter = function(pos, inputData, outputData) {
   outputData[pos] = inputData[pos];
@@ -517,10 +543,139 @@ sepiaFilter = function(pos, inputData, outputData){
 	outputData[pos+3] = inputData[pos+3];
 }
 
+saturationFilter = function(pos, inputData, outputData){
+	var gray = (inputData[pos] + inputData[pos+1] + inputData[pos+2]) / 3;
+	var rPos = (gray + (((inputData[pos] - gray)*500)/255));
+	if (rPos > 255) 
+	{
+		outputData[pos] = 255;
+	} 
+	else if ( rPos < 0 )
+	{
+		outputData[pos] = 0;				
+	}
+	else
+	{
+		outputData[pos] = rPos;
+	}
+	
+	var gPos = (gray + (((inputData[pos+1] - gray)*500)/255));
+	if (gPos > 255) 
+	{
+		outputData[pos+1] = 255;
+	} 
+	else if ( gPos < 0 )
+	{
+		outputData[pos+1] = 0;				
+	}
+	else
+	{
+		outputData[pos+1] = gPos;
+	}
+
+	var bPos = (gray + (((inputData[pos+2] - gray)*500)/255));
+	if (bPos > 255) 
+	{
+		outputData[pos+2] = 255;
+	} 
+	else if ( bPos < 0 )
+	{
+		outputData[pos+2] = 0;				
+	}
+	else
+	{
+		outputData[pos+2] = bPos;
+	}
+	
+	outputData[pos+3] = inputData[pos+3];
+}
+
+desaturationFilter = function(pos, inputData, outputData){
+	var gray = (inputData[pos] + inputData[pos+1] + inputData[pos+2]) / 3;
+	var rPos = (gray + (((inputData[pos] - gray)*100)/255));
+	if (rPos > 255) 
+	{
+		outputData[pos] = 255;
+	} 
+	else if ( rPos < 0 )
+	{
+		outputData[pos] = 0;				
+	}
+	else
+	{
+		outputData[pos] = rPos;
+	}
+	
+	var gPos = (gray + (((inputData[pos+1] - gray)*100)/255));
+	if (gPos > 255) 
+	{
+		outputData[pos+1] = 255;
+	} 
+	else if ( gPos < 0 )
+	{
+		outputData[pos+1] = 0;				
+	}
+	else
+	{
+		outputData[pos+1] = gPos;
+	}
+
+	var bPos = (gray + (((inputData[pos+2] - gray)*100)/255));
+	if (bPos > 255) 
+	{
+		outputData[pos+2] = 255;
+	} 
+	else if ( bPos < 0 )
+	{
+		outputData[pos+2] = 0;				
+	}
+	else
+	{
+		outputData[pos+2] = bPos;
+	}
+	
+	outputData[pos+3] = inputData[pos+3];
+}
+
 increasebrightnessFilter = function(pos, inputData, outputData){
 	outputData[pos] = 100 + inputData[pos];
 	outputData[pos+1] = 100 + inputData[pos+1];
 	outputData[pos+2] = 100 + inputData[pos+2];
+	outputData[pos+3] = inputData[pos+3];
+}
+
+RGB_RBG = function(pos, inputData, outputData){
+	outputData[pos] = inputData[pos];
+	outputData[pos+1] = inputData[pos+2];
+	outputData[pos+2] = inputData[pos+1];
+	outputData[pos+3] = inputData[pos+3];
+}
+
+RGB_BGR = function(pos, inputData, outputData){
+	outputData[pos] = inputData[pos+2];
+	outputData[pos+1] = inputData[pos+1];
+	outputData[pos+2] = inputData[pos];
+	outputData[pos+3] = inputData[pos+3];
+}
+
+RGB_BRG = function(pos, inputData, outputData){
+	outputData[pos] = inputData[pos+2];
+	outputData[pos+1] = inputData[pos];
+	outputData[pos+2] = inputData[pos+1];
+	outputData[pos+3] = inputData[pos+3];
+}
+
+RGB_GBR = function(pos, inputData, outputData){
+	outputData[pos] = inputData[pos+1];
+	outputData[pos+1] = inputData[pos+2];
+	outputData[pos+2] = inputData[pos];
+	outputData[pos+3] = inputData[pos+3];
+}
+
+RGB_GRB = function(pos, inputData, outputData){
+	outputData[pos] = inputData[pos+1];
+	outputData[pos+1] = inputData[pos];
+	outputData[pos+2] = inputData[pos+2];
 	outputData[pos+3] = inputData[pos+3];
 }
 
